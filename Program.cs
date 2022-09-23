@@ -4,6 +4,7 @@
 //e salvare tutti gli indirizzi contenuti al sul interno all’interno di una lista di oggetti istanziati a partire dalla classe Indirizzo.
 //Attenzione: gli ultimi 3 indirizzi presentano dei possibili “casi particolari” che possono accadere a questo genere di file: vi chiedo di pensarci e di gestire come meglio crediate queste casistiche.
 
+using System.IO;
 using System.Net;
 
 List<Address> addressesList = new List<Address>();
@@ -15,7 +16,6 @@ string path = "../../../addresses.csv";
 StreamReader addressFile = File.OpenText(path);
 
 addressFile.ReadLine();
-
 
 while (!addressFile.EndOfStream)
 {
@@ -31,19 +31,27 @@ while (!addressFile.EndOfStream)
         string province = split[4];
         string zip = split[5];
 
+        if(name == "" | surname == "" | street == "" | city == "" | province == "" | zip == "")
+        {
+            throw new ArgumentNullException();
+        }
+
         Address newAddress = new Address(name, surname, street, city, province, zip);
 
         addressesList.Add(newAddress);
 
         Console.WriteLine("Destinatario importato correttamente");
-
     }
 
     catch (IndexOutOfRangeException)
     {
-        Console.WriteLine("Destinatario non valido -->" + row);
+        Console.WriteLine("Destinatario non valido --> " + row);
     }
-  
+
+    catch (ArgumentNullException)
+    {
+        Console.WriteLine("Destinatario non valido --> " + row);
+    }
 }
 
 addressFile.Close();
@@ -69,8 +77,6 @@ catch (Exception e)
 {
     Console.WriteLine("Qualcosa è andato storto: {0}", e.Message);
 }
-
-
 
 
 Console.WriteLine(" --- ", addressesList);
